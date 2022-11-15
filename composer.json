@@ -1,0 +1,11 @@
+{
+    "name": "talgat065/random_prize",
+    "description": "Test task for Slotegrator",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app"
+        }
+    },
+    "require": {}
+}
