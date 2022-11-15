@@ -9,3 +9,6 @@ destroy:
 
 build:
 	docker-compose up --build -d
+
+test:
+	docker-compose exec php_fpm ./vendor/bin/phpunit tests

@@ -1,6 +1,10 @@
 # Image and version
 FROM php:7.4-fpm
 
+RUN apt update
+
+RUN apt-get install git -y
+
 # Call PHP images script `docker-php-ext-install` and install language extensions
 RUN docker-php-ext-install pdo_mysql
 
