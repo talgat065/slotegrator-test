@@ -11,59 +11,81 @@ use App\Domain\ValueObjects\PrizeType;
 
 final class SlotMachine
 {
+    private const MIN_BONUS_WIN = 100;
+    private const MAX_BONUS_WIN = 5000;
+
+    private const MIN_MONEY_WIN = 10;
+    private const MAX_MONEY_WIN = 500;
+
     private Randomizer $randomizer;
     private array $items;
-    private Money $totalMoney;
+    private Money $money;
 
     public function __construct(Randomizer $randomizer, Money $money, array $items)
     {
         $this->randomizer = $randomizer;
         $this->items = $items;
-        $this->totalMoney = $money;
+        $this->money = $money;
     }
 
     public function getPrize(User $user): Prize
     {
-        $prizeTypes = [Prize::MONEY, Prize::BONUS, Prize::ITEM];
-        [$min, $max] = [0, sizeof($prizeTypes) - 1];
+        $type = $this->getRandomPrizeType();
 
-        $randomIndex = $this->randomizer->getNumber($min, $max);
-        $type = new PrizeType($prizeTypes[$randomIndex]);
+        $money = $this->getMoney($type);
+        $bonus = $this->getBonus($type);
+        $item = $this->getRandomItem();
 
-        $amount = 0;
-        $money = new Money(0);
-        $bonus = new Bonus(0);
-        $item = null;
-        switch ($type->value()) {
-            case Prize::MONEY:
-                $amount = $this->getRandomSum($type);
-                $money = new Money($amount);
-                break;
-            case Prize::BONUS:
-                $amount = $this->getRandomSum($type);
-                $bonus = new Bonus($amount);
-                break;
-            case Prize::ITEM:
-                $item = $this->getRandomItem();
+        return new Prize(UUID::create(), $user, $type, $money, $bonus, $item);
+    }
+
+    private function getRandomPrizeType(): PrizeType
+    {
+        $prizeTypes = [Prize::BONUS];
+
+        if ($this->money->amount() >= self::MIN_MONEY_WIN) {
+            $prizeTypes[] = Prize::MONEY;
+        }
+        if (sizeof($this->items) > 0) {
+            $prizeTypes[] = Prize::ITEM;
         }
 
-        return new Prize(
-            UUID::create(),
-            $user,
-            $type,
-            $money,
-            $bonus,
-            $item
-        );
+        $typesSize = sizeof($prizeTypes);
+        $randomIndex = $this->randomizer->getNumber(0, --$typesSize);
+
+        try {
+            return new PrizeType($prizeTypes[$randomIndex]);
+        } catch (\Throwable $e){
+            print_r($prizeTypes);
+            print_r($typesSize.PHP_EOL);
+            print_r($randomIndex.PHP_EOL);
+        }
+
     }
 
-    private function getRandomSum(): int
+    public function getMoney(PrizeType $type): Money
     {
-        return $this->randomizer->getNumber(0, 100);
+        if ($type->value() === Prize::MONEY) {
+            $maxWin = min($this->money->amount(), self::MAX_MONEY_WIN);
+            $amount = $this->randomizer->getNumber(self::MIN_MONEY_WIN, $maxWin);
+            return new Money($amount);
+        }
+
+        return new Money(0);
     }
 
-    private function getRandomItem(): Item
+    public function getBonus(PrizeType $type): Bonus
     {
-        return $this->items[$this->randomizer->getNumber(0, sizeof($this->items) - 1)];
+        if ($type->value() === Prize::BONUS) {
+            $amount = $this->randomizer->getNumber(self::MIN_BONUS_WIN, self::MAX_BONUS_WIN);
+            return new Bonus($amount);
+        }
+
+        return new Bonus(0);
+    }
+
+    private function getRandomItem(): ?Item
+    {
+        return $this->items[$this->randomizer->getNumber(0, sizeof($this->items) - 1)] ?? null;
     }
 }
