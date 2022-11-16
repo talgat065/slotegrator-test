@@ -21,17 +21,15 @@ final class SlotMachineTest extends TestCase
     {
         $money = new Money(100);
         $randomizer = new FakeRandomizer([0, 20]);
-        $slotMachine = new SlotMachine($randomizer, $money, [
-            new Item(UUID::create(), new Name('LA HABANA Scented Candle 200 ml')),
-            new Item(UUID::create(), new Name('Carne Bollente Men On Fire Towel')),
-            new Item(UUID::create(), new Name('La Soufflerie Boule Vase in Green')),
-        ]);
+        $slotMachine = new SlotMachine($randomizer, $money, []);
 
         $user = new User(UUID::create(), new Name('Paul'));
         $prize = $slotMachine->getPrize($user);
 
         $this->assertEquals(Prize::MONEY, $prize->getType()->value());
         $this->assertEquals(20, $prize->getMoney()->amount());
+        $this->assertEquals(0, $prize->getBonus()->amount());
+        $this->assertNull($prize->getItem());
         $this->assertEquals($prize->getUser(), $user);
     }
 
@@ -39,16 +37,36 @@ final class SlotMachineTest extends TestCase
     {
         $money = new Money(100);
         $randomizer = new FakeRandomizer([1, 500]);
-        $slotMachine = new SlotMachine($randomizer, $money, [
-            new Item(UUID::create(), new Name('LA HABANA Scented Candle 200 ml')),
-            new Item(UUID::create(), new Name('Carne Bollente Men On Fire Towel')),
-            new Item(UUID::create(), new Name('La Soufflerie Boule Vase in Green')),
-        ]);
+        $slotMachine = new SlotMachine($randomizer, $money, []);
 
         $user = new User(UUID::create(), new Name('Robert Paulson'));
         $prize = $slotMachine->getPrize($user);
 
         $this->assertEquals(Prize::BONUS, $prize->getType()->value());
-        $this->assertEquals(500, $prize->getMoney()->amount());
+        $this->assertEquals(0, $prize->getMoney()->amount());
+        $this->assertEquals(500, $prize->getBonus()->amount());
+        $this->assertNull($prize->getItem());
+    }
+
+    public function testItemPrize(): void
+    {
+        $money = new Money(0);
+        $randomizer = new FakeRandomizer([2, 1]);
+        [$item1, $item2, $item3] = [
+            new Item(UUID::create(), new Name('LA HABANA Scented Candle 200 ml')),
+            new Item(UUID::create(), new Name('Carne Bollente Men On Fire Towel')),
+            new Item(UUID::create(), new Name('La Soufflerie Boule Vase in Green')),
+        ];
+
+        $slotMachine = new SlotMachine($randomizer, $money, [$item1, $item2, $item3]);
+
+        $user = new User(UUID::create(), new Name('Robert Paulson'));
+        $prize = $slotMachine->getPrize($user);
+
+        $this->assertEquals(Prize::ITEM, $prize->getType()->value());
+        $this->assertEquals(0, $prize->getMoney()->amount());
+        $this->assertEquals(0, $prize->getBonus()->amount());
+        $this->assertNotNull($prize->getItem());
+        $this->assertSame($item2, $prize->getItem());
     }
 }
