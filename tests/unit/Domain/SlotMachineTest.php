@@ -20,7 +20,7 @@ final class SlotMachineTest extends TestCase
     public function testMoneyPrize(): void
     {
         $money = new Money(100);
-        $randomizer = new FakeRandomizer([0, 20]);
+        $randomizer = new FakeRandomizer([1, 20, 0]);
         $slotMachine = new SlotMachine($randomizer, $money, []);
 
         $user = new User(UUID::create(), new Name('Paul'));
@@ -36,7 +36,7 @@ final class SlotMachineTest extends TestCase
     public function testBonusPrize(): void
     {
         $money = new Money(100);
-        $randomizer = new FakeRandomizer([1, 500]);
+        $randomizer = new FakeRandomizer([0, 500, 0]);
         $slotMachine = new SlotMachine($randomizer, $money, []);
 
         $user = new User(UUID::create(), new Name('Robert Paulson'));
@@ -51,7 +51,7 @@ final class SlotMachineTest extends TestCase
     public function testItemPrize(): void
     {
         $money = new Money(0);
-        $randomizer = new FakeRandomizer([2, 1]);
+        $randomizer = new FakeRandomizer([1, 1]);
         [$item1, $item2, $item3] = [
             new Item(UUID::create(), new Name('LA HABANA Scented Candle 200 ml')),
             new Item(UUID::create(), new Name('Carne Bollente Men On Fire Towel')),
