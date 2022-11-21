@@ -19,6 +19,16 @@
     },
     "require": {
         "ramsey/uuid": "^4.2",
-        "php-di/php-di": "^6.4"
+        "php-di/php-di": "^6.4",
+        "nikic/fast-route": "^1.3",
+        "relay/relay": "^2.1",
+        "zendframework/zend-diactoros": "^2.2",
+        "middlewares/fast-route": "^2.0",
+        "middlewares/request-handler": "^2.0",
+        "slim/psr7": "^1.6",
+        "nikolaposa/phoundation": "^3.0",
+        "laminas/laminas-servicemanager": "^3.17",
+        "narrowspark/http-emitter": "^1.0",
+        "laminas/laminas-diactoros": "2.2"
     }
 }

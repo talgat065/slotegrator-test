@@ -33,6 +33,10 @@ class PrizeService
         $slotMachine = new SlotMachine(new RandomNumber(), new Money(500), $items);
 
         $prize = $slotMachine->getPrize($user);
+        print_r($prize->getType()->value() . PHP_EOL);
+        print_r('money: ' .$prize->getMoney()->amount() . PHP_EOL);
+        print_r('bonus: ' .$prize->getBonus()->amount() . PHP_EOL);
+        print_r('item: ' . $prize->getItem()->getName()->value() . PHP_EOL);
         $this->prizeRepository->persist($prize);
     }
 }

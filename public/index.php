@@ -1,32 +1,57 @@
 <?php declare(strict_types=1);
 
-use App\Application\Dto\DrawPrizeRequest;
-use App\Application\Handlers\PrizeService;
-use App\Application\Repositories\ItemRepository;
-use App\Application\Repositories\PrizeRepository;
-use App\Application\Repositories\UserRepository;
-use App\Infrastructure\Repositories\SqlItemRepository;
-use App\Infrastructure\Repositories\SqlPrizeRepository;
-use App\Infrastructure\Repositories\SqlUserRepository;
+use App\Ports\Http\Controllers\PrizeController;
+use Laminas\Diactoros\ServerRequestFactory;
+use Middlewares\FastRoute;
+use Middlewares\RequestHandler;
+use Narrowspark\HttpEmitter\SapiEmitter;
+use Relay\Relay;
 
 require_once __DIR__ . "./../vendor/autoload.php";
 
-$containerBuilder = new \DI\ContainerBuilder();
-$containerBuilder->useAutowiring(false);
-$containerBuilder->useAnnotations(false);
+$container = require __DIR__ . '/../config/container.php';
+$routes = require __DIR__ . '/../config/routes.php';
 
-$containerBuilder->addDefinitions([
-    ItemRepository::class => \DI\create(SqlItemRepository::class),
-    PrizeRepository::class => \DI\create(SqlPrizeRepository::class),
-    UserRepository::class => \DI\create(SqlUserRepository::class),
-    PrizeService::class => \DI\create(PrizeService::class)->constructor(
-        \Di\get(PrizeRepository::class),
-        \Di\get(UserRepository::class),
-        \Di\get(ItemRepository::class),
-    ),
-]);
+$middleware = [
+    new FastRoute($routes),
+    new RequestHandler($container),
+];
 
-$container = $containerBuilder->build();
+$requestHandler = new Relay($middleware);
+$response = $requestHandler->handle(ServerRequestFactory::fromGlobals());
 
-$helloWorld = $container->get(PrizeService::class);
-$helloWorld->draw(new DrawPrizeRequest('uuid'));
+(new SapiEmitter())->emit($response);
+
+//$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+//    $r->addRoute('GET', '/', function () {
+//        echo  "hellow world";
+//    });
+//});
+//
+//// Fetch method and URI from somewhere
+//$httpMethod = $_SERVER['REQUEST_METHOD'];
+//$uri = $_SERVER['REQUEST_URI'];
+//
+//// Strip query string (?foo=bar) and decode URI
+//if (false !== $pos = strpos($uri, '?')) {
+//    $uri = substr($uri, 0, $pos);
+//}
+//$uri = rawurldecode($uri);
+//
+//$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+//switch ($routeInfo[0]) {
+//    case FastRoute\Dispatcher::NOT_FOUND:
+//        echo "not found";
+//        // ... 404 Not Found
+//        break;
+//    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+//        $allowedMethods = $routeInfo[1];
+//        // ... 405 Method Not Allowed
+//        break;
+//    case FastRoute\Dispatcher::FOUND:
+//        $handler = $routeInfo[1];
+//        $vars = $routeInfo[2];
+//        $handler(...$vars);
+//        // ... call $handler with $vars
+//        break;
+//}
