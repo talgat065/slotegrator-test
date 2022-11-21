@@ -29,6 +29,7 @@
         "nikolaposa/phoundation": "^3.0",
         "laminas/laminas-servicemanager": "^3.17",
         "narrowspark/http-emitter": "^1.0",
-        "laminas/laminas-diactoros": "2.2"
+        "laminas/laminas-diactoros": "2.2",
+        "robmorgan/phinx": "^0.13.1"
     }
 }
