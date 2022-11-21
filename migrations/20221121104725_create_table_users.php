@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class CreateItemsTable extends AbstractMigration
+final class CreateTableUsers extends AbstractMigration
 {
     public function change()
     {
-        $this->table('items', ['id' => FALSE, 'primary_key' => 'id'])
+        $this->table('users', ['id' => FALSE, 'primary_key' => 'id'])
             ->addColumn('id', 'uuid', [
                 'null' => false,
             ])
