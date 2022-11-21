@@ -29,7 +29,6 @@ class PrizeService
     {
         $user = $this->userRepository->getByID($request->getUserID());
         $items = $this->itemRepository->findAll();
-
         $slotMachine = new SlotMachine(new RandomNumber(), new Money(500), $items);
 
         $prize = $slotMachine->getPrize($user);

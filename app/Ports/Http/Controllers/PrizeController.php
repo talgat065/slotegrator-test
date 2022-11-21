@@ -4,6 +4,7 @@ namespace App\Ports\Http\Controllers;
 
 use App\Application\Dto\DrawPrizeRequest;
 use App\Application\Handlers\PrizeService;
+use DI\Container;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PrizeController
@@ -18,6 +19,8 @@ class PrizeController
 
     public function __invoke()
     {
+//        $c = new Container();
+//        $c->get('db');
         $request = new DrawPrizeRequest($this->request->getHeaderLine('X-UserID'));
         $this->prizeService->draw($request);
     }

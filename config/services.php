@@ -14,9 +14,22 @@ use function DI\create;
 
 return [
     ServerRequestInterface::class => ServerRequestFactory::fromGlobals(),
-    UserRepository::class => create(SqlUserRepository::class),
-    ItemRepository::class => create(SqlItemRepository::class),
-    PrizeRepository::class => create(SqlPrizeRepository::class),
+    'db' => \Doctrine\DBAL\DriverManager::getConnection([
+        'dbname' => 'random_prizes',
+        'user' => 'root',
+        'password' => 'password',
+        'host' => 'db',
+        'driver' => 'pdo_mysql',
+    ]),
+    ItemRepository::class => function (ContainerInterface $c) {
+        return new SqlItemRepository($c->get('db'));
+    },
+    UserRepository::class => function (ContainerInterface $c) {
+        return new SqlUserRepository($c->get('db'));
+    },
+    PrizeRepository::class => function (ContainerInterface $c) {
+        return new SqlPrizeRepository($c->get('db'));
+    },
     PrizeService::class => function (ContainerInterface $c) {
         return new PrizeService(
             $c->get(PrizeRepository::class),
