@@ -27,6 +27,9 @@ final class CreateTablePrizes extends AbstractMigration
             ->addColumn('bonus', 'integer', [
                 'null' => true,
             ])
+            ->addColumn('processed', 'boolean', [
+                'default' => false,
+            ])
             ->addTimestamps()
             ->create();
     }

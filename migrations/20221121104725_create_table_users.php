@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
@@ -17,6 +16,12 @@ final class CreateTableUsers extends AbstractMigration
             ->addColumn('name', 'string')
             ->addIndex('name', [
                 'unique' => true,
+            ])
+            ->addColumn('money', 'integer', [
+                'default' => 0,
+            ])
+            ->addColumn('bonus', 'integer', [
+                'default' => 0,
             ])
             ->addTimestamps()
             ->create();

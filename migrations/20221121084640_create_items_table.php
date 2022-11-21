@@ -15,8 +15,8 @@ final class CreateItemsTable extends AbstractMigration
                 'unique' => true,
             ])
             ->addColumn('name', 'string')
-            ->addIndex('name', [
-                'unique' => true,
+            ->addColumn('given', 'boolean', [
+                'default' => false,
             ])
             ->addTimestamps()
             ->create();
