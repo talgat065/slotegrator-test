@@ -9,7 +9,7 @@ use App\Domain\Prize;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-class SqlPrizeRepository implements PrizeRepository
+class DoctrinePrizeRepository implements PrizeRepository
 {
     private Connection $db;
 

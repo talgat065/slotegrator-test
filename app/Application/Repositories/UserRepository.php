@@ -8,5 +8,5 @@ use App\Domain\User;
 
 interface UserRepository
 {
-    public function getByID(string $uuid): User;
+    public function getByID(string $uuid): ?User;
 }

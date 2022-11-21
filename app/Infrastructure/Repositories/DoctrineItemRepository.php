@@ -11,7 +11,7 @@ use App\Domain\ValueObjects\Name;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
-class SqlItemRepository implements ItemRepository
+class DoctrineItemRepository implements ItemRepository
 {
     private Connection $db;
 
@@ -29,7 +29,6 @@ class SqlItemRepository implements ItemRepository
         $data = $qb->select('id', 'name')->from('items')->executeQuery()->fetchAllAssociative();
         $result = [];
         foreach ($data as $item) {
-//        print_r($data); die;
             $result[] = new Item(new UUID($item['id']), new Name($item['name']));
         }
         return $result;

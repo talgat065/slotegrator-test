@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "21e905a9e16efa48d70f0667b040decc",
+    "content-hash": "da656f062956a35e37a35ae17947bc25",
     "packages": [
         {
             "name": "brick/math",
@@ -1403,6 +1403,55 @@
                 "source": "https://github.com/nikolaposa/phoundation/tree/3.0.0"
             },
             "time": "2020-03-28T18:52:34+00:00"
+        },
+        {
+            "name": "patricklouys/http",
+            "version": "v1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PatrickLouys/http.git",
+                "reference": "94920a93515081fb446bb27529f9aea6df159004"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PatrickLouys/http/zipball/94920a93515081fb446bb27529f9aea6df159004",
+                "reference": "94920a93515081fb446bb27529f9aea6df159004",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.0.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Http\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Patrick Louys",
+                    "email": "patrick@louys.ch",
+                    "role": "Creator / Main Developer"
+                }
+            ],
+            "description": "HTTP Component",
+            "keywords": [
+                "http",
+                "request",
+                "response"
+            ],
+            "support": {
+                "issues": "https://github.com/PatrickLouys/http/issues",
+                "source": "https://github.com/PatrickLouys/http/tree/master"
+            },
+            "time": "2016-08-18T15:47:28+00:00"
         },
         {
             "name": "php-di/invoker",

@@ -4,9 +4,9 @@ use App\Application\Handlers\PrizeService;
 use App\Application\Repositories\ItemRepository;
 use App\Application\Repositories\PrizeRepository;
 use App\Application\Repositories\UserRepository;
-use App\Infrastructure\Repositories\SqlItemRepository;
-use App\Infrastructure\Repositories\SqlPrizeRepository;
-use App\Infrastructure\Repositories\SqlUserRepository;
+use App\Infrastructure\Repositories\DoctrineItemRepository;
+use App\Infrastructure\Repositories\DoctrinePrizeRepository;
+use App\Infrastructure\Repositories\DoctrineUserRepository;
 use Laminas\Diactoros\ServerRequestFactory;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,13 +22,13 @@ return [
         'driver' => 'pdo_mysql',
     ]),
     ItemRepository::class => function (ContainerInterface $c) {
-        return new SqlItemRepository($c->get('db'));
+        return new DoctrineItemRepository($c->get('db'));
     },
     UserRepository::class => function (ContainerInterface $c) {
-        return new SqlUserRepository($c->get('db'));
+        return new DoctrineUserRepository($c->get('db'));
     },
     PrizeRepository::class => function (ContainerInterface $c) {
-        return new SqlPrizeRepository($c->get('db'));
+        return new DoctrinePrizeRepository($c->get('db'));
     },
     PrizeService::class => function (ContainerInterface $c) {
         return new PrizeService(
