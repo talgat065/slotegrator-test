@@ -8,17 +8,18 @@ use App\Domain\Exceptions\UserNotFound;
 use DI\Container;
 use Laminas\Diactoros\ResponseFactory;
 use Psr\Http\Message\ServerRequestInterface;
+use Throwable;
 
-class PrizeController extends BaseController
+class DrawPrizeController extends BaseController
 {
     private ServerRequestInterface $request;
-    private PrizeService $prizeService;
+    private PrizeService $service;
 
-    public function __construct(ServerRequestInterface $request, PrizeService $prizeService)
+    public function __construct(ServerRequestInterface $request, PrizeService $service)
     {
         parent::__construct();
         $this->request = $request;
-        $this->prizeService = $prizeService;
+        $this->service = $service;
     }
 
     public function __invoke()
@@ -26,8 +27,8 @@ class PrizeController extends BaseController
         $request = new DrawPrizeRequest($this->request->getHeaderLine('X-UserID'));
 
         try {
-            $prize = $this->prizeService->draw($request);
-        } catch (\Throwable $e) {
+            $prize = $this->service->drawPrize($request);
+        } catch (Throwable $e) {
             return $this->error([
                 'status' => 'failed',
                 'message' => $e->getMessage(),

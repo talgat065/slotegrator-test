@@ -30,7 +30,7 @@ class PrizeService
     /**
      * @throws UserNotFound
      */
-    public function draw(DrawPrizeRequest $request)
+    public function drawPrize(DrawPrizeRequest $request)
     {
         $user = $this->userRepository->getByID($request->getUserID());
         if ($user === null) {

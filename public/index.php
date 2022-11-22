@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-use App\Ports\Http\Controllers\PrizeController;
+use App\Ports\Http\Controllers\DrawPrizeController;
 use Laminas\Diactoros\ServerRequestFactory;
 use Middlewares\FastRoute;
 use Middlewares\RequestHandler;
