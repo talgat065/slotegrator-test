@@ -13,6 +13,7 @@ use App\Domain\ValueObjects\Bonus;
 use App\Domain\ValueObjects\Money;
 use App\Domain\ValueObjects\Name;
 use App\Domain\ValueObjects\PrizeType;
+use DeepCopy\f001\B;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -52,7 +53,8 @@ class DoctrinePrizeRepository implements PrizeRepository
         } else {
             $this->db->update('prizes', [
                 'accepted' => $prize->isAccepted() ? 1 : 0,
-                'updated_at' => date('Y-m-d H:i:s'),
+                'processed' => $prize->isProcessed() ? 1 : 0,
+                'updated_at' => date('Y-m-d H:i:s')
             ], [
                 'id' => $prize->getId()->value(),
             ]);
@@ -92,7 +94,7 @@ class DoctrinePrizeRepository implements PrizeRepository
         foreach ($data as $item) {
             $result[] = new Prize(
                 new UUID($item['prize_id']),
-                new User(new UUID($item['user_id']), new Name($item['user_name'])),
+                new User(new UUID($item['user_id']), new Name($item['user_name']), new Bonus((int)$item['bonus'])),
                 new PrizeType($item['type']),
                 new Money((int)$item['money']),
                 new Bonus((int)$item['bonus']),
@@ -115,11 +117,13 @@ class DoctrinePrizeRepository implements PrizeRepository
             'p.id as prize_id',
             'u.id as user_id',
             'u.name as user_name',
+            'u.bonus as user_bonus',
             'i.id as item_id',
             'i.name as item_name',
             'p.type',
             'p.money',
             'p.bonus',
+            'p.accepted',
             'p.processed',
             'p.created_at',
         )
@@ -136,13 +140,13 @@ class DoctrinePrizeRepository implements PrizeRepository
         }
         return new Prize(
             new UUID($data['prize_id']),
-            new User(new UUID($data['user_id']), new Name($data['user_name'])),
+            new User(new UUID($data['user_id']), new Name($data['user_name']), new Bonus((int)$data['bonus'])),
             new PrizeType($data['type']),
             new Money((int)$data['money']),
             new Bonus((int)$data['bonus']),
             $data['item_id'] != null ? new Item(new UUID($data['item_id']), new Name($data['item_name'])) : null,
-            false,
-            $data['p.processed'] == true,
+            $data['accepted'] == true,
+            $data['processed'] == true,
         );
     }
 }

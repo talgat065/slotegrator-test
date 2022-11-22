@@ -9,4 +9,6 @@ use App\Domain\User;
 interface UserRepository
 {
     public function getByID(string $id): ?User;
+
+    public function updateBonus(User $user): void;
 }

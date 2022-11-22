@@ -6,28 +6,37 @@ namespace App\Application\Handlers;
 
 use App\Application\Dto\AcceptPrizeRequest;
 use App\Application\Dto\DrawPrizeRequest;
+use App\Application\Dto\TransferPrizeRequest;
+use App\Application\External\BankService;
+use App\Application\External\BankUnavailable;
 use App\Application\Repositories\ItemRepository;
 use App\Application\Repositories\PrizeRepository;
 use App\Application\Repositories\UserRepository;
-use App\Domain\Exceptions\ItemNotFound;
 use App\Domain\Exceptions\PrizeNotFound;
 use App\Domain\Exceptions\UserNotFound;
+use App\Domain\Prize;
 use App\Domain\RandomNumber;
 use App\Domain\SlotMachine;
 use App\Domain\ValueObjects\Money;
-use Exception;
+use DomainException;
 
 class PrizeService
 {
     private PrizeRepository $prizeRepository;
     private UserRepository $userRepository;
     private ItemRepository $itemRepository;
+    private BankService $bankService;
 
-    public function __construct(PrizeRepository $prizeRepository, UserRepository $userRepository, ItemRepository $itemRepository)
-    {
+    public function __construct(
+        PrizeRepository $prizeRepository,
+        UserRepository $userRepository,
+        ItemRepository $itemRepository,
+        BankService $bankService
+    ) {
         $this->prizeRepository = $prizeRepository;
         $this->userRepository = $userRepository;
         $this->itemRepository = $itemRepository;
+        $this->bankService = $bankService;
     }
 
     /**
@@ -68,5 +77,37 @@ class PrizeService
             $prize->decline($user);
             $this->prizeRepository->persist($prize);
         }
+    }
+
+    /**
+     * @throws BankUnavailable
+     */
+    public function transfer(TransferPrizeRequest $request)
+    {
+        $user = $this->userRepository->getByID($request->getUserID());
+        if ($user === null) {
+            throw new UserNotFound('user not found');
+        }
+
+        $prize = $this->prizeRepository->getByID($request->getPrizeID());
+        if ($prize === null) {
+            throw new PrizeNotFound('prize not found');
+        }
+
+        if ($prize->getType()->value() === Prize::BONUS) {
+            $prize->transferBonusToAccount($user);
+            $this->userRepository->updateBonus($user);
+        } elseif ($prize->getType()->value() === Prize::MONEY) {
+            $prize->transferMoney($user, $request->isConvertationNeeds());
+            if ($request->isConvertationNeeds()) {
+                $this->userRepository->updateBonus($user);
+            } else {
+                $this->bankService->transferMoneyToClient($user->getID()->value(), $prize->getMoney()->amount());
+            }
+        } else {
+            throw new DomainException('unable to transfer this kind of prize');
+        }
+
+        $this->prizeRepository->persist($prize);
     }
 }

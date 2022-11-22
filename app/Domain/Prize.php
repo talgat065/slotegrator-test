@@ -12,6 +12,8 @@ use DomainException;
 
 final class Prize
 {
+    private const MONEY_BONUS_COEF = 2;
+
     public const MONEY = 'money';
     public const BONUS = 'bonus';
     public const ITEM = 'item';
@@ -22,7 +24,7 @@ final class Prize
     private Bonus $bonus;
     private PrizeType $type;
     private bool $accepted;
-    private bool $isSent;
+    private bool $processed;
     private ?Item $item;
 
     public function __construct(
@@ -33,7 +35,7 @@ final class Prize
         Bonus $bonus,
         ?Item $item = null,
         bool $accepted = false,
-        bool $isSent = false
+        bool $processed = false
     ) {
         $this->id = $id;
         $this->user = $user;
@@ -41,26 +43,57 @@ final class Prize
         $this->money = $money;
         $this->bonus = $bonus;
         $this->accepted = $accepted;
-        $this->isSent = $isSent;
+        $this->processed = $processed;
         $this->item = $item;
     }
 
     public function accept(User $user): void
     {
-        if (!$this->user->getID()->equals($user->getID())) {
-            throw new DomainException('user must be owner of the prize to process operation');
-        }
+        $this->checkOwnership($user);
 
         $this->accepted = true;
     }
 
     public function decline(User $user): void
     {
-        if (!$this->user->getID()->equals($user->getID())) {
-            throw new DomainException('user must be owner of the prize to process operation');
-        }
+        $this->checkOwnership($user);
 
         $this->accepted = false;
+    }
+
+    public function transferBonusToAccount(User $user): void
+    {
+        $this->checkOwnership($user);
+
+        if (!$this->isAccepted()) {
+            throw new DomainException('prize must accepted before transfering');
+        }
+
+        if ($this->isProcessed()) {
+            return;
+        }
+
+        $user->addBonus($this->bonus);
+        $this->processed = true;
+    }
+
+    public function transferMoney(User $user, bool $needsConvertation): void
+    {
+        $this->checkOwnership($user);
+
+        if (!$this->isAccepted()) {
+            throw new DomainException('prize must accepted before transfering');
+        }
+
+        if ($this->isProcessed()) {
+            throw new DomainException('duplicate money transfering detected');
+        }
+
+        if ($needsConvertation) {
+            $user->addBonus(new Bonus($this->money->amount() * self::MONEY_BONUS_COEF));
+        }
+
+        $this->processed = true;
     }
 
     public function getId(): UUID
@@ -83,9 +116,9 @@ final class Prize
         return $this->accepted;
     }
 
-    public function isSent(): bool
+    public function isProcessed(): bool
     {
-        return $this->isSent;
+        return $this->processed;
     }
 
     /**
@@ -104,6 +137,17 @@ final class Prize
     public function getBonus(): Bonus
     {
         return $this->bonus;
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    private function checkOwnership(User $user): void
+    {
+        if (!$this->user->getID()->equals($user->getID())) {
+            throw new DomainException('user must be owner of the prize to process operation');
+        }
     }
 
 
