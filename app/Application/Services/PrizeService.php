@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Application\Handlers;
 
+use App\Application\Dto\AcceptPrizeRequest;
 use App\Application\Dto\DrawPrizeRequest;
 use App\Application\Repositories\ItemRepository;
 use App\Application\Repositories\PrizeRepository;
 use App\Application\Repositories\UserRepository;
+use App\Domain\Exceptions\ItemNotFound;
+use App\Domain\Exceptions\PrizeNotFound;
 use App\Domain\Exceptions\UserNotFound;
 use App\Domain\RandomNumber;
 use App\Domain\SlotMachine;
@@ -44,5 +47,26 @@ class PrizeService
         $this->prizeRepository->persist($prize);
 
         return $prize;
+    }
+
+    public function accept(AcceptPrizeRequest $request)
+    {
+        $user = $this->userRepository->getByID($request->getUserID());
+        if ($user === null) {
+            throw new UserNotFound('user not found');
+        }
+
+        $prize = $this->prizeRepository->getByID($request->getPrizeID());
+        if ($prize === null) {
+            throw new PrizeNotFound('prize not found');
+        }
+
+        if ($request->isAccept()) {
+            $prize->accept($user);
+            $this->prizeRepository->persist($prize);
+        } else {
+            $prize->decline($user);
+            $this->prizeRepository->persist($prize);
+        }
     }
 }

@@ -22,4 +22,10 @@ interface PrizeRepository
      * @return Prize[]
      */
     public function prizesList(UUID $userID): array;
+
+    /**
+     * @param string $id
+     * @return Prize|null
+     */
+    public function getByID(string $id): ?Prize;
 }

@@ -13,9 +13,10 @@ class BaseController
         $this->response = new HttpResponse();
     }
 
-    public function success(string $msg, array $data)
+    public function success(string $msg, ?array $data)
     {
         $this->response->setStatusCode(200);
+        $this->response->setHeader('Content-Type', 'application/json');
         $data = [
             'status' => 'success',
             'message' => $msg,
@@ -30,6 +31,7 @@ class BaseController
     public function error(array $data)
     {
         $this->response->setStatusCode(400);
+        $this->response->setHeader('Content-Type', 'application/json');
         $this->response->setContent(json_encode($data));
 
         return $this->response->getContent();

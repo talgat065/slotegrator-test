@@ -24,14 +24,14 @@ class DoctrineUserRepository implements UserRepository
     /**
      * @throws Exception
      */
-    public function getByID(string $uuid): ?User
+    public function getByID(string $id): ?User
     {
         $qb = $this->db->createQueryBuilder();
 
         $data = $qb->select('id', 'name')
             ->from('users')
             ->where('id = ?')
-            ->setParameter(0, $uuid)
+            ->setParameter(0, $id)
             ->executeQuery()
             ->fetchAssociative();
 

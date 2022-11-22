@@ -8,6 +8,7 @@ use App\Domain\Shared\UUID;
 use App\Domain\ValueObjects\Bonus;
 use App\Domain\ValueObjects\Money;
 use App\Domain\ValueObjects\PrizeType;
+use DomainException;
 
 final class Prize
 {
@@ -42,6 +43,24 @@ final class Prize
         $this->accepted = $accepted;
         $this->isSent = $isSent;
         $this->item = $item;
+    }
+
+    public function accept(User $user): void
+    {
+        if (!$this->user->getID()->equals($user->getID())) {
+            throw new DomainException('user must be owner of the prize to process operation');
+        }
+
+        $this->accepted = true;
+    }
+
+    public function decline(User $user): void
+    {
+        if (!$this->user->getID()->equals($user->getID())) {
+            throw new DomainException('user must be owner of the prize to process operation');
+        }
+
+        $this->accepted = false;
     }
 
     public function getId(): UUID

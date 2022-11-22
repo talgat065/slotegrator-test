@@ -31,16 +31,32 @@ class DoctrinePrizeRepository implements PrizeRepository
     public function persist(Prize $prize): void
     {
         $item = $prize->getItem();
-        $this->db->insert('prizes', [
-            'id' => $prize->getId()->value(),
-            'user_id' => $prize->getUser()->getID()->value(),
-            'item_id' => $item !== null ? $item->getId()->value() : null,
-            'type' => $prize->getType()->value(),
-            'money' => $prize->getMoney()->amount(),
-            'bonus' => $prize->getBonus()->amount(),
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
+        $qb = $this->db->createQueryBuilder();
+        $exists = (bool)$qb->select('true')
+            ->from('prizes', 'p')
+            ->where('p.id = ' . $qb->createNamedParameter($prize->getId()->value()))
+            ->executeQuery()
+            ->rowCount();
+        if (!$exists) {
+            $this->db->insert('prizes', [
+                'id' => $prize->getId()->value(),
+                'user_id' => $prize->getUser()->getID()->value(),
+                'item_id' => $item !== null ? $item->getId()->value() : null,
+                'type' => $prize->getType()->value(),
+                'money' => $prize->getMoney()->amount(),
+                'bonus' => $prize->getBonus()->amount(),
+                'accepted' => $prize->isAccepted(),
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+        } else {
+            $this->db->update('prizes', [
+                'accepted' => $prize->isAccepted() ? 1 : 0,
+                'updated_at' => date('Y-m-d H:i:s'),
+            ], [
+                'id' => $prize->getId()->value(),
+            ]);
+        }
     }
 
     /**
@@ -67,6 +83,7 @@ class DoctrinePrizeRepository implements PrizeRepository
             ->innerJoin('p', 'users', 'u', 'p.user_id = u.id')
             ->leftJoin('p', 'items', 'i', 'p.item_id = i.id')
             ->where('p.user_id = ' . $qb->createNamedParameter($userID->value()))
+            ->andWhere('p.accepted = true')
             ->orderBy('p.created_at', 'desc')
             ->executeQuery()
             ->fetchAllAssociative();
@@ -85,5 +102,47 @@ class DoctrinePrizeRepository implements PrizeRepository
             );
         }
         return $result;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getByID(string $id): ?Prize
+    {
+        $qb = $this->db->createQueryBuilder();
+
+        $data = $qb->select(
+            'p.id as prize_id',
+            'u.id as user_id',
+            'u.name as user_name',
+            'i.id as item_id',
+            'i.name as item_name',
+            'p.type',
+            'p.money',
+            'p.bonus',
+            'p.processed',
+            'p.created_at',
+        )
+            ->from('prizes', 'p')
+            ->innerJoin('p', 'users', 'u', 'p.user_id = u.id')
+            ->leftJoin('p', 'items', 'i', 'p.item_id = i.id')
+            ->where('p.id = ?')
+            ->setParameter(0, $id)
+            ->executeQuery()
+            ->fetchAssociative();
+
+        if (!$data) {
+            return null;
+        }
+        return new Prize(
+            new UUID($data['prize_id']),
+            new User(new UUID($data['user_id']), new Name($data['user_name'])),
+            new PrizeType($data['type']),
+            new Money((int)$data['money']),
+            new Bonus((int)$data['bonus']),
+            $data['item_id'] != null ? new Item(new UUID($data['item_id']), new Name($data['item_name'])) : null,
+            false,
+            $data['p.processed'] == true,
+        );
     }
 }
