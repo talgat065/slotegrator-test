@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Domain;
 
@@ -28,13 +26,13 @@ final class SlotMachine
         $this->money = $money;
     }
 
-    public function getPrize(User $user): Prize
+    public function drawPrize(User $user): Prize
     {
         $type = $this->getRandomPrizeType();
 
         $money = $this->getMoney($type);
         $bonus = $this->getBonus($type);
-        $item = $this->getRandomItem();
+        $item = $this->getRandomItem($type);
 
         return new Prize(UUID::create(), $user, $type, $money, $bonus, $item);
     }
@@ -53,14 +51,7 @@ final class SlotMachine
         $typesSize = sizeof($prizeTypes);
         $randomIndex = $this->randomizer->getNumber(0, --$typesSize);
 
-        try {
-            return new PrizeType($prizeTypes[$randomIndex]);
-        } catch (\Throwable $e){
-            print_r($prizeTypes);
-            print_r($typesSize.PHP_EOL);
-            print_r($randomIndex.PHP_EOL);
-        }
-
+        return new PrizeType($prizeTypes[$randomIndex]);
     }
 
     public function getMoney(PrizeType $type): Money
@@ -84,8 +75,12 @@ final class SlotMachine
         return new Bonus(0);
     }
 
-    private function getRandomItem(): ?Item
+    private function getRandomItem(PrizeType $type): ?Item
     {
-        return $this->items[$this->randomizer->getNumber(0, sizeof($this->items) - 1)] ?? null;
+        if ($type->value() === Prize::ITEM) {
+            return $this->items[$this->randomizer->getNumber(0, sizeof($this->items) - 1)];
+        }
+
+        return null;
     }
 }

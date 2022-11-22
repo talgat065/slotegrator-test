@@ -10,6 +10,7 @@ use App\Domain\Shared\UUID;
 use App\Domain\User;
 use App\Domain\ValueObjects\Name;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class DoctrineUserRepository implements UserRepository
 {
@@ -20,15 +21,20 @@ class DoctrineUserRepository implements UserRepository
         $this->db = $connection;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getByID(string $uuid): ?User
     {
         $qb = $this->db->createQueryBuilder();
+
         $data = $qb->select('id', 'name')
             ->from('users')
             ->where('id = ?')
             ->setParameter(0, $uuid)
             ->executeQuery()
             ->fetchAssociative();
+
         if (!$data) {
             return null;
         }

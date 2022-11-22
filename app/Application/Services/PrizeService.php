@@ -40,7 +40,7 @@ class PrizeService
 
         $slotMachine = new SlotMachine(new RandomNumber(), new Money(500), $items);
 
-        $prize = $slotMachine->getPrize($user);
+        $prize = $slotMachine->drawPrize($user);
         $this->prizeRepository->persist($prize);
 
         return $prize;

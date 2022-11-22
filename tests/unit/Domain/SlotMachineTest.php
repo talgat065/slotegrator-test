@@ -24,7 +24,7 @@ final class SlotMachineTest extends TestCase
         $slotMachine = new SlotMachine($randomizer, $money, []);
 
         $user = new User(UUID::create(), new Name('Paul'));
-        $prize = $slotMachine->getPrize($user);
+        $prize = $slotMachine->drawPrize($user);
 
         $this->assertEquals(Prize::MONEY, $prize->getType()->value());
         $this->assertEquals(20, $prize->getMoney()->amount());
@@ -40,7 +40,7 @@ final class SlotMachineTest extends TestCase
         $slotMachine = new SlotMachine($randomizer, $money, []);
 
         $user = new User(UUID::create(), new Name('Robert Paulson'));
-        $prize = $slotMachine->getPrize($user);
+        $prize = $slotMachine->drawPrize($user);
 
         $this->assertEquals(Prize::BONUS, $prize->getType()->value());
         $this->assertEquals(0, $prize->getMoney()->amount());
@@ -61,7 +61,7 @@ final class SlotMachineTest extends TestCase
         $slotMachine = new SlotMachine($randomizer, $money, [$item1, $item2, $item3]);
 
         $user = new User(UUID::create(), new Name('Robert Paulson'));
-        $prize = $slotMachine->getPrize($user);
+        $prize = $slotMachine->drawPrize($user);
 
         $this->assertEquals(Prize::ITEM, $prize->getType()->value());
         $this->assertEquals(0, $prize->getMoney()->amount());

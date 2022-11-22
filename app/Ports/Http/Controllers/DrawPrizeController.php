@@ -38,7 +38,7 @@ class DrawPrizeController extends BaseController
             'user_id' => $request->getUserID(),
             'money' => $prize->getMoney()->amount(),
             'bonus' => $prize->getBonus()->amount(),
-            'item' => $prize->getItem() !== null ? $prize->getItem()->getName() : null,
+            'item' => $prize->getItem() !== null ? $prize->getItem()->getName()->value() : null,
         ]);
     }
 }
