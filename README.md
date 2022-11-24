@@ -2,24 +2,24 @@
 
 The repository contains code for generating random prizes
 
-#### Tech Stack
+### Tech Stack
 - PHP 7.4
 - Nginx 1.17.8
 - MySQL 8.0
 
-#### Packages
+### Packages
 - [php-di/php-di](https://github.com/PHP-DI/PHP-DI)
 - [nikic/fast-route](https://github.com/nikic/FastRoute)
 - [doctrine/dbal](https://github.com/doctrine/dbal)
 - [patricklouys/http](https://github.com/PatrickLouys/http)
 
-#### Installation
+### Installation
 `$ make up`
 
-#### Run tests
+### Run tests
 `$ make test`
 
-#### Usage
+### Usage
 |url                |example                        |description                         |
 |------------|-------------------------------|-----------------------------|
 |GET {{HOST}}/api/v1/prizes|`curl -H 'X-UserID: {{USER_ID}}' {{HOST}}/api/v1/prizes`            | Get list of prizes           |
