@@ -32,6 +32,7 @@
         "laminas/laminas-diactoros": "2.2",
         "robmorgan/phinx": "^0.13.1",
         "doctrine/dbal": "^3.5",
-        "patricklouys/http": "~1.4"
+        "patricklouys/http": "~1.4",
+        "symfony/console": "^5.4"
     }
 }

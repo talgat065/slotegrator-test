@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+require __DIR__.'/vendor/autoload.php';
+
+use App\Application\Services\UserService;
+use App\Ports\Cli\Commands\CreateUserCommand;
+use Symfony\Component\Console\Application;
+
+$container = require __DIR__ . '/config/container.php';
+
+$app = new Application();
+
+// ... register commands
+$app->add(new CreateUserCommand('user:create', $container->get(UserService::class)));
+
+$app->run();
