@@ -45,18 +45,19 @@ $ make test
 $ git clone git@github.com:talgat065/slotegrator-test.git
 $ cd slotegrator-test
 
-$ make up
+$ make run
+$ make test
 
 $ php console user:create Paul
 
-$ php console item:create 'Luna Controller with Phone Clip Bundle'
-$ php console item:create 'Ring Alarm 8-piece kit (2nd Gen) with Ring Indoor Cam'
-$ php console item:create 'Razer Anzu Smart Glasses'
+$ docker-compose exec php_fpm php console item:create 'Luna Controller with Phone Clip Bundle'
+$ docker-compose exec php_fpm php console item:create 'Ring Alarm 8-piece kit (2nd Gen) with Ring Indoor Cam'
+$ docker-compose exec php_fpm php console item:create 'Razer Anzu Smart Glasses'
 
 $ curl -X POST -H 'X-UserID: {{USER_ID}}' '127.0.0.1:8080/api/v1/prize/draw' // repeat several times if needed
 $ curl -X POST -H 'X-UserID: {{USER_ID}}' '127.0.0.1:8080/api/v1/prize/accept?prize_id={{PRIZE_ID}}&accept=1' // accept a prize
 $ curl -X POST -H 'X-UserID: {{USER_ID}}' '127.0.0.1:8080/api/v1/prize/transfer?prize_id={{PRIZE_ID}}&needs_convertation=1' // transfer money to a bank account
 $ curl -X POST -H 'X-UserID: {{USER_ID}}' '127.0.0.1:8080/api/v1/prize/delivery?prize_id={{PRIZE_ID}}' // order delivery for item prize
 
-$ php console prizes:transfer --batch-count=10 // batch transfer money to user bank accounts
+$ docker-compose exec php_fpm php console prizes:transfer --batch-count=10 // batch transfer money to user bank accounts
 ```
