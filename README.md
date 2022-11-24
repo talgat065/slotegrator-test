@@ -48,7 +48,7 @@ $ cd slotegrator-test
 $ make run
 $ make test
 
-$ php console user:create Paul
+$ docker-compose exec php_fpm php console user:create Paul
 
 $ docker-compose exec php_fpm php console item:create 'Luna Controller with Phone Clip Bundle'
 $ docker-compose exec php_fpm php console item:create 'Ring Alarm 8-piece kit (2nd Gen) with Ring Indoor Cam'
