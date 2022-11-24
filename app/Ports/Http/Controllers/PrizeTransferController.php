@@ -2,7 +2,6 @@
 
 namespace App\Ports\Http\Controllers;
 
-use App\Application\Dto\AcceptPrizeRequest;
 use App\Application\Dto\TransferPrizeRequest;
 use App\Application\Services\PrizeService;
 use Psr\Http\Message\ServerRequestInterface;

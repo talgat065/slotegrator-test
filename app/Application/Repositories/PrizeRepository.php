@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Application\Repositories;
 
@@ -24,6 +22,7 @@ interface PrizeRepository
     public function prizesList(UUID $userID): array;
 
     /**
+     * Finds prize by ID.
      * @param string $id
      * @return Prize|null
      */

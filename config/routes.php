@@ -2,6 +2,7 @@
 
 use App\Ports\Http\Controllers\DrawPrizeController;
 use App\Ports\Http\Controllers\PrizeAcceptController;
+use App\Ports\Http\Controllers\PrizeDeliveryController;
 use App\Ports\Http\Controllers\PrizesListController;
 use App\Ports\Http\Controllers\PrizeTransferController;
 use FastRoute\RouteCollector;
@@ -12,4 +13,5 @@ return simpleDispatcher(function (RouteCollector $r) {
     $r->post('/prize/draw', DrawPrizeController::class);
     $r->post('/prize/accept', PrizeAcceptController::class);
     $r->post('/prize/transfer', PrizeTransferController::class);
+    $r->post('/prize/delivery', PrizeDeliveryController::class);
 });

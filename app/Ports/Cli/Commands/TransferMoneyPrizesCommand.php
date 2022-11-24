@@ -2,11 +2,9 @@
 
 namespace App\Ports\Cli\Commands;
 
-use App\Application\Dto\TransferPrizeRequest;
-use App\Application\Services\ItemService;
+use App\Application\External\BankUnavailable;
 use App\Application\Services\PrizeService;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,6 +27,9 @@ class TransferMoneyPrizesCommand extends BaseCommand
         parent::configure();
     }
 
+    /**
+     * @throws BankUnavailable
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $batchCount = (int)$input->getOption('batch-count');

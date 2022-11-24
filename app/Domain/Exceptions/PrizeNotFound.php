@@ -1,9 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Domain\Exceptions;
 
-final class PrizeNotFound extends \DomainException
+use DomainException;
+
+final class PrizeNotFound extends DomainException
 {
 }

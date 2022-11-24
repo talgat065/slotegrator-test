@@ -3,15 +3,9 @@
 namespace App\Ports\Http\Controllers;
 
 use App\Application\Dto\DrawPrizeRequest;
-use App\Application\Services\PrizeService;
 use App\Application\Repositories\PrizeRepository;
-use App\Domain\Exceptions\UserNotFound;
-use App\Domain\Prize;
 use App\Domain\Shared\UUID;
-use DI\Container;
-use Laminas\Diactoros\ResponseFactory;
 use Psr\Http\Message\ServerRequestInterface;
-use Throwable;
 
 class PrizesListController extends BaseController
 {

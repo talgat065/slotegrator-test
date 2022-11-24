@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Application\Services;
 
@@ -72,11 +70,10 @@ class PrizeService
 
         if ($request->isAccept()) {
             $prize->accept($user);
-            $this->prizeRepository->persist($prize);
         } else {
             $prize->decline($user);
-            $this->prizeRepository->persist($prize);
         }
+        $this->prizeRepository->persist($prize);
     }
 
     /**

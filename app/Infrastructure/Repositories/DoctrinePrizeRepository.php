@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Infrastructure\Repositories;
 
@@ -13,7 +11,6 @@ use App\Domain\ValueObjects\Bonus;
 use App\Domain\ValueObjects\Money;
 use App\Domain\ValueObjects\Name;
 use App\Domain\ValueObjects\PrizeType;
-use DeepCopy\f001\B;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 

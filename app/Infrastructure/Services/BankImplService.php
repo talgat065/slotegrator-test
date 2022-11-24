@@ -3,7 +3,6 @@
 namespace App\Infrastructure\Services;
 
 use App\Application\External\BankService;
-use App\Application\External\BankUnavailable;
 
 class BankImplService implements BankService
 {

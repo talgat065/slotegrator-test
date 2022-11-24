@@ -5,6 +5,7 @@ namespace App\Application\External;
 interface DeliveryService
 {
     /**
+     * Orders a delivery for item type prize.
      * @param string $userID
      * @param string $itemID
      * @return void

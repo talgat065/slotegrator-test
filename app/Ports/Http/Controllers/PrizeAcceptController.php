@@ -3,12 +3,7 @@
 namespace App\Ports\Http\Controllers;
 
 use App\Application\Dto\AcceptPrizeRequest;
-use App\Application\Dto\DrawPrizeRequest;
 use App\Application\Services\PrizeService;
-use App\Domain\Exceptions\UserNotFound;
-use DI\Container;
-use Laminas\Diactoros\ResponseFactory;
-use Phalcon\Mvc\Model\Transaction\Failed;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 

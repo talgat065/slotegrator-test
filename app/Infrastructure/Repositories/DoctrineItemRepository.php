@@ -1,13 +1,10 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Infrastructure\Repositories;
 
 use App\Application\Repositories\ItemRepository;
 use App\Domain\Item;
 use App\Domain\Shared\UUID;
-use App\Domain\User;
 use App\Domain\ValueObjects\Name;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;

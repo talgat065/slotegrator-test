@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Domain;
 
@@ -82,7 +80,6 @@ final class Prize
         $this->checkOwnership($user);
 
         if (!$this->isAccepted()) {
-//            print_r($this->id->value()); die;
             throw new DomainException('prize must be accepted before transfering');
         }
 

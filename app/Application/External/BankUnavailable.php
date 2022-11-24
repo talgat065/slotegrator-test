@@ -2,6 +2,8 @@
 
 namespace App\Application\External;
 
-class BankUnavailable extends \Exception
+use Exception;
+
+class BankUnavailable extends Exception
 {
 }
