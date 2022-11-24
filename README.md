@@ -16,7 +16,7 @@ The repository contains code for generating random prizes
 
 ### Installation
 ```bash
-$ make up
+$ make run
 ```
 
 ### Run tests
