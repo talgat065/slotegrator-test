@@ -10,5 +10,5 @@ interface UserRepository
 {
     public function getByID(string $id): ?User;
 
-    public function updateBonus(User $user): void;
+    public function persist(User $user): void;
 }

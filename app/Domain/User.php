@@ -14,7 +14,7 @@ class User
     private Name $name;
     private Bonus $bonus;
 
-    public function __construct(UUID $id, Name $name, ?Bonus $bonus)
+    public function __construct(UUID $id, Name $name, ?Bonus $bonus = null)
     {
         $this->id = $id;
         $this->name = $name;

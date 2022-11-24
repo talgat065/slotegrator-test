@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Handlers;
+namespace App\Application\Services;
 
 use App\Application\Dto\AcceptPrizeRequest;
 use App\Application\Dto\DrawPrizeRequest;
@@ -96,11 +96,11 @@ class PrizeService
 
         if ($prize->getType()->value() === Prize::BONUS) {
             $prize->transferBonusToAccount($user);
-            $this->userRepository->updateBonus($user);
+            $this->userRepository->persist($user);
         } elseif ($prize->getType()->value() === Prize::MONEY) {
             $prize->transferMoney($user, $request->isConvertationNeeds());
             if ($request->isConvertationNeeds()) {
-                $this->userRepository->updateBonus($user);
+                $this->userRepository->persist($user);
             } else {
                 $this->bankService->transferMoneyToClient($user->getID()->value(), $prize->getMoney()->amount());
             }

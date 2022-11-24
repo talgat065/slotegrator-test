@@ -5,6 +5,7 @@ use App\Application\Handlers\PrizeService;
 use App\Application\Repositories\ItemRepository;
 use App\Application\Repositories\PrizeRepository;
 use App\Application\Repositories\UserRepository;
+use App\Application\Services\UserService;
 use App\Infrastructure\Repositories\DoctrineItemRepository;
 use App\Infrastructure\Repositories\DoctrinePrizeRepository;
 use App\Infrastructure\Repositories\DoctrineUserRepository;
@@ -42,6 +43,11 @@ return [
             $c->get(UserRepository::class),
             $c->get(ItemRepository::class),
             $c->get(BankService::class)
+        );
+    },
+    UserService::class => function (ContainerInterface $c) {
+        return new UserService(
+            $c->get(UserRepository::class)
         );
     },
 ];
