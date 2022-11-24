@@ -21,4 +21,11 @@ interface ItemRepository
      * @return Item|null
      */
     public function getByID(string $id): ?Item;
+
+    /**
+     * Save item to storage
+     * @param Item $item
+     * @return void
+     */
+    public function persist(Item $item): void;
 }

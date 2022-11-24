@@ -54,4 +54,33 @@ class DoctrineItemRepository implements ItemRepository
         }
         return new Item(new UUID($data['id']), new Name($data['name']));
     }
+
+    /**
+     * @throws Exception
+     */
+    public function persist(Item $item): void
+    {
+        $qb = $this->db->createQueryBuilder();
+
+        $exists = (bool)$qb->select('true')
+            ->from('items', 'u')
+            ->where('u.id = ' . $qb->createNamedParameter($item->getId()->value()))
+            ->executeQuery()
+            ->rowCount();
+
+        if (!$exists) {
+            $this->db->insert('items', [
+                'id' => $item->getID()->value(),
+                'name' => $item->getName()->value(),
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+        } else {
+            $this->db->update('items', [
+                'name' => $item->getName()->value(),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ], [
+                'id' => $item->getId()->value(),
+            ]);
+        }
+    }
 }
