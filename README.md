@@ -1,6 +1,6 @@
 ### Slotegrator-Test-Task
 
-The repository contains code to generate random prizes
+The repository contains code for generating random prizes
 
 #### Tech Stack
 - PHP 7.4
