@@ -87,8 +87,27 @@ final class Prize
             throw new DomainException('duplicate money transfering detected');
         }
 
-        if ($needsConvertation) {
+        if ($needsConvertation && $this->type->value() === self::MONEY) {
             $user->addBonus(new Bonus($this->money->amount() * self::MONEY_BONUS_COEF));
+        }
+
+        $this->processed = true;
+    }
+
+    public function sendOnDelivery(User $user): void
+    {
+        $this->checkOwnership($user);
+
+        if (!$this->isAccepted()) {
+            throw new DomainException('prize must be accepted before sending on delivery');
+        }
+
+        if ($this->type->value() !== self::ITEM) {
+            throw new DomainException('can not send on delivery this kind of prize');
+        }
+
+        if ($this->isProcessed()) {
+            throw new DomainException('item has already been sent on delivery');
         }
 
         $this->processed = true;
@@ -147,6 +166,4 @@ final class Prize
             throw new DomainException('user must be owner of the prize to process operation');
         }
     }
-
-
 }

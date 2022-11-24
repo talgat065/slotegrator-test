@@ -35,26 +35,6 @@ class DoctrineItemRepository implements ItemRepository
     /**
      * @throws Exception
      */
-    public function getByID(string $id): ?Item
-    {
-        $qb = $this->db->createQueryBuilder();
-
-        $data = $qb->select('id', 'name')
-            ->from('items')
-            ->where('id = ?')
-            ->setParameter(0, $id->value())
-            ->executeQuery()
-            ->fetchAssociative();
-
-        if (!$data) {
-            return null;
-        }
-        return new Item(new UUID($data['id']), new Name($data['name']));
-    }
-
-    /**
-     * @throws Exception
-     */
     public function persist(Item $item): void
     {
         $qb = $this->db->createQueryBuilder();

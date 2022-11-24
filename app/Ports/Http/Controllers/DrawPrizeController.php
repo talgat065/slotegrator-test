@@ -32,7 +32,7 @@ class DrawPrizeController extends BaseController
             ]);
         }
         return $this->success('congratulations', [
-            'user_id' => $request->getUserID(),
+            'prize_id' => $prize->getId()->value(),
             'money' => $prize->getMoney()->amount(),
             'bonus' => $prize->getBonus()->amount(),
             'item' => $prize->getItem() !== null ? $prize->getItem()->getName()->value() : null,

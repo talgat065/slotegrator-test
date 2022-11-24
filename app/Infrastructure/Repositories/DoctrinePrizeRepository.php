@@ -43,7 +43,7 @@ class DoctrinePrizeRepository implements PrizeRepository
                 'type' => $prize->getType()->value(),
                 'money' => $prize->getMoney()->amount(),
                 'bonus' => $prize->getBonus()->amount(),
-                'accepted' => $prize->isAccepted(),
+                'accepted' => $prize->isAccepted() ? 1 : 0,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);

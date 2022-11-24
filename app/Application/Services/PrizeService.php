@@ -3,10 +3,12 @@
 namespace App\Application\Services;
 
 use App\Application\Dto\AcceptPrizeRequest;
+use App\Application\Dto\DeliverPrizeRequest;
 use App\Application\Dto\DrawPrizeRequest;
 use App\Application\Dto\TransferPrizeRequest;
 use App\Application\External\BankService;
 use App\Application\External\BankUnavailable;
+use App\Application\External\DeliveryService;
 use App\Application\Repositories\ItemRepository;
 use App\Application\Repositories\PrizeRepository;
 use App\Application\Repositories\UserRepository;
@@ -24,17 +26,20 @@ class PrizeService
     private UserRepository $userRepository;
     private ItemRepository $itemRepository;
     private BankService $bankService;
+    private DeliveryService $deliveryService;
 
     public function __construct(
         PrizeRepository $prizeRepository,
         UserRepository $userRepository,
         ItemRepository $itemRepository,
-        BankService $bankService
+        BankService $bankService,
+        DeliveryService $deliveryService
     ) {
         $this->prizeRepository = $prizeRepository;
         $this->userRepository = $userRepository;
         $this->itemRepository = $itemRepository;
         $this->bankService = $bankService;
+        $this->deliveryService = $deliveryService;
     }
 
     /**
@@ -105,6 +110,23 @@ class PrizeService
             throw new DomainException('unable to transfer this kind of prize');
         }
 
+        $this->prizeRepository->persist($prize);
+    }
+
+    public function delivery(DeliverPrizeRequest $request)
+    {
+        $user = $this->userRepository->getByID($request->getUserID());
+        if ($user === null) {
+            throw new UserNotFound('user not found');
+        }
+
+        $prize = $this->prizeRepository->getByID($request->getPrizeID());
+        if ($prize === null) {
+            throw new PrizeNotFound('prize not found');
+        }
+
+        $prize->sendOnDelivery($user);
+        $this->deliveryService->process($user->getID()->value(), $prize->getItem()->getId()->value());
         $this->prizeRepository->persist($prize);
     }
 
