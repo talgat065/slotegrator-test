@@ -16,6 +16,9 @@ The repository contains code to generate random prizes
 #### Installation
 `$ make up`
 
+#### Run tests
+`$ make test`
+
 #### Usage
 |url                |example                        |description                         |
 |------------|-------------------------------|-----------------------------|
