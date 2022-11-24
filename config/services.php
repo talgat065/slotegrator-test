@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 use App\Application\External\BankService;
-use App\Application\Handlers\PrizeService;
+use App\Application\Services\PrizeService;
 use App\Application\Repositories\ItemRepository;
 use App\Application\Repositories\PrizeRepository;
 use App\Application\Repositories\UserRepository;
