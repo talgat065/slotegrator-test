@@ -110,4 +110,29 @@ class PrizeService
 
         $this->prizeRepository->persist($prize);
     }
+
+    /**
+     * Transfers prize money's to user accounts.
+     * Returns number of processed prizes.
+     * @param int $batchCount
+     * @return int
+     * @throws BankUnavailable
+     */
+    public function batchTransfer(int $batchCount): int
+    {
+        $prizes = $this->prizeRepository->findUnprocessedMoneyPrizes($batchCount);
+
+        foreach ($prizes as $prize) {
+            $prize->transferMoney($prize->getUser(), false);
+
+            $this->bankService->transferMoneyToClient(
+                $prize->getUser()->getID()->value(),
+                $prize->getMoney()->amount()
+            );
+
+            $this->prizeRepository->persist($prize);
+        }
+
+        return sizeof($prizes);
+    }
 }

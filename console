@@ -4,9 +4,11 @@
 require __DIR__.'/vendor/autoload.php';
 
 use App\Application\Services\ItemService;
+use App\Application\Services\PrizeService;
 use App\Application\Services\UserService;
 use App\Ports\Cli\Commands\CreateItemCommand;
 use App\Ports\Cli\Commands\CreateUserCommand;
+use App\Ports\Cli\Commands\TransferMoneyPrizesCommand;
 use Symfony\Component\Console\Application;
 
 $container = require __DIR__ . '/config/container.php';
@@ -16,5 +18,6 @@ $app = new Application();
 // ... register commands
 $app->add(new CreateUserCommand('user:create', $container->get(UserService::class)));
 $app->add(new CreateItemCommand('item:create', $container->get(ItemService::class)));
+$app->add(new TransferMoneyPrizesCommand('prizes:transfer', $container->get(PrizeService::class)));
 
 $app->run();

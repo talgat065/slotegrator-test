@@ -66,7 +66,7 @@ final class Prize
         $this->checkOwnership($user);
 
         if (!$this->isAccepted()) {
-            throw new DomainException('prize must accepted before transfering');
+            throw new DomainException('prize must be accepted before transfering');
         }
 
         if ($this->isProcessed()) {
@@ -82,7 +82,8 @@ final class Prize
         $this->checkOwnership($user);
 
         if (!$this->isAccepted()) {
-            throw new DomainException('prize must accepted before transfering');
+//            print_r($this->id->value()); die;
+            throw new DomainException('prize must be accepted before transfering');
         }
 
         if ($this->isProcessed()) {

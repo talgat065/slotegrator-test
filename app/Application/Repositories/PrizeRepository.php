@@ -28,4 +28,10 @@ interface PrizeRepository
      * @return Prize|null
      */
     public function getByID(string $id): ?Prize;
+
+    /**
+     * Finds unprocessed money typed prizes.
+     * @return Prize[]
+     */
+    public function findUnprocessedMoneyPrizes(int $batchCount): array;
 }

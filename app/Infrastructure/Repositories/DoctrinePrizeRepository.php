@@ -149,4 +149,53 @@ class DoctrinePrizeRepository implements PrizeRepository
             $data['processed'] == true,
         );
     }
+
+    /**
+     * @throws Exception
+     */
+    public function findUnprocessedMoneyPrizes(int $batchCount): array
+    {
+        $qb = $this->db->createQueryBuilder();
+
+        $data = $qb->select(
+            'p.id as prize_id',
+            'u.id as user_id',
+            'u.name as user_name',
+            'i.id as item_id',
+            'i.name as item_name',
+            'p.type',
+            'p.money',
+            'p.bonus',
+            'p.accepted',
+            'p.processed',
+            'p.created_at',
+        )
+            ->from('prizes', 'p')
+            ->innerJoin('p', 'users', 'u', 'p.user_id = u.id')
+            ->leftJoin('p', 'items', 'i', 'p.item_id = i.id')
+            ->where('p.accepted = true')
+            ->andWhere('p.processed = 0')
+            ->andWhere('p.type = ?')
+            ->setParameter(0, Prize::MONEY)
+            ->orderBy('p.created_at', 'desc')
+            ->setFirstResult(0)
+            ->setMaxResults($batchCount)
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $result = [];
+        foreach ($data as $item) {
+            $result[] = new Prize(
+                new UUID($item['prize_id']),
+                new User(new UUID($item['user_id']), new Name($item['user_name']), new Bonus((int)$item['bonus'])),
+                new PrizeType($item['type']),
+                new Money((int)$item['money']),
+                new Bonus((int)$item['bonus']),
+                $item['item_id'] != null ? new Item(new UUID($item['item_id']), new Name($item['item_name'])) : null,
+                $item['accepted'] == 1,
+                $item['processed'] == 1,
+            );
+        }
+        return $result;
+    }
 }
