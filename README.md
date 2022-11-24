@@ -15,10 +15,14 @@ The repository contains code for generating random prizes
 - [symfony/console](https://github.com/symfony/console)
 
 ### Installation
-`$ make up`
+```bash
+$ make up
+```
 
 ### Run tests
-`$ make test`
+```bash
+$ make test
+```
 
 ### API
 |url                |example                        |description                         |
