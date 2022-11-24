@@ -12,6 +12,7 @@ The repository contains code for generating random prizes
 - [nikic/fast-route](https://github.com/nikic/FastRoute)
 - [doctrine/dbal](https://github.com/doctrine/dbal)
 - [patricklouys/http](https://github.com/PatrickLouys/http)
+- [symfony/console](https://github.com/symfony/console)
 
 ### Installation
 `$ make up`
